@@ -1,0 +1,136 @@
+# Benchmark: 8 seeder containers, each with its own port and data volume.
+#
+# Setup:
+#   1. Place compiled Linux binary at ./deployments/p2pcdn-daemon
+#   2. Place files to seed in ./deployments/seed/
+#   3. Copy .env.benchmark to .env.benchmark and fill in values
+#   4. docker compose -f deployments/docker-compose.yml up -d
+#
+# Attach to REPL:
+#   docker attach p2pcdn-seeder-1   (Ctrl+P, Ctrl+Q to detach)
+#
+# Uses host networking: no NAT, no port mapping confusion.
+# Each seeder binds directly to its port on the host network.
+# Data dirs use bind mounts so peer keys persist across restarts.
+
+x-seeder: &seeder
+  image: debian:bookworm-slim
+  network_mode: host
+  stdin_open: true
+  tty: true
+  env_file:
+    - .env.benchmark
+  environment:
+    TERM: xterm-256color
+  volumes:
+    - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+    - ./seed:/app/seed:ro
+    - /etc/ssl/certs/ca-certificates.crt:/etc/ssl/certs/ca-certificates.crt:ro
+  working_dir: /app
+  command: ["sh", "-c", "apt-get update -qq && apt-get install -y -qq ca-certificates > /dev/null 2>&1; stty erase '^H' 2>/dev/null; exec ./p2pcdn-daemon"]
+  restart: unless-stopped
+
+services:
+  seeder1:
+    <<: *seeder
+    container_name: p2pcdn-seeder-1
+    environment:
+      P2PCDN_CLIENT_LISTEN_PORT: "50001"
+      P2PCDN_DAEMON_ADDR: "0.0.0.0:9091"
+      P2PCDN_CLIENT_DATA_DIR: /app/data/seeder1
+      P2PCDN_LOGGING_FILE: /app/data/seeder1/daemon.log
+    volumes:
+      - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+      - ./seed:/app/seed:ro
+      - ./data/seeder1:/app/data/seeder1
+
+  seeder2:
+    <<: *seeder
+    container_name: p2pcdn-seeder-2
+    environment:
+      P2PCDN_CLIENT_LISTEN_PORT: "50002"
+      P2PCDN_DAEMON_ADDR: "0.0.0.0:9092"
+      P2PCDN_CLIENT_DATA_DIR: /app/data/seeder2
+      P2PCDN_LOGGING_FILE: /app/data/seeder2/daemon.log
+    volumes:
+      - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+      - ./seed:/app/seed:ro
+      - ./data/seeder2:/app/data/seeder2
+
+  seeder3:
+    <<: *seeder
+    container_name: p2pcdn-seeder-3
+    environment:
+      P2PCDN_CLIENT_LISTEN_PORT: "50003"
+      P2PCDN_DAEMON_ADDR: "0.0.0.0:9093"
+      P2PCDN_CLIENT_DATA_DIR: /app/data/seeder3
+      P2PCDN_LOGGING_FILE: /app/data/seeder3/daemon.log
+    volumes:
+      - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+      - ./seed:/app/seed:ro
+      - ./data/seeder3:/app/data/seeder3
+
+  seeder4:
+    <<: *seeder
+    container_name: p2pcdn-seeder-4
+    environment:
+      P2PCDN_CLIENT_LISTEN_PORT: "50004"
+      P2PCDN_DAEMON_ADDR: "0.0.0.0:9094"
+      P2PCDN_CLIENT_DATA_DIR: /app/data/seeder4
+      P2PCDN_LOGGING_FILE: /app/data/seeder4/daemon.log
+    volumes:
+      - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+      - ./seed:/app/seed:ro
+      - ./data/seeder4:/app/data/seeder4
+
+  seeder5:
+    <<: *seeder
+    container_name: p2pcdn-seeder-5
+    environment:
+      P2PCDN_CLIENT_LISTEN_PORT: "50005"
+      P2PCDN_DAEMON_ADDR: "0.0.0.0:9095"
+      P2PCDN_CLIENT_DATA_DIR: /app/data/seeder5
+      P2PCDN_LOGGING_FILE: /app/data/seeder5/daemon.log
+    volumes:
+      - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+      - ./seed:/app/seed:ro
+      - ./data/seeder5:/app/data/seeder5
+
+  seeder6:
+    <<: *seeder
+    container_name: p2pcdn-seeder-6
+    environment:
+      P2PCDN_CLIENT_LISTEN_PORT: "50006"
+      P2PCDN_DAEMON_ADDR: "0.0.0.0:9096"
+      P2PCDN_CLIENT_DATA_DIR: /app/data/seeder6
+      P2PCDN_LOGGING_FILE: /app/data/seeder6/daemon.log
+    volumes:
+      - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+      - ./seed:/app/seed:ro
+      - ./data/seeder6:/app/data/seeder6
+
+  seeder7:
+    <<: *seeder
+    container_name: p2pcdn-seeder-7
+    environment:
+      P2PCDN_CLIENT_LISTEN_PORT: "50007"
+      P2PCDN_DAEMON_ADDR: "0.0.0.0:9097"
+      P2PCDN_CLIENT_DATA_DIR: /app/data/seeder7
+      P2PCDN_LOGGING_FILE: /app/data/seeder7/daemon.log
+    volumes:
+      - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+      - ./seed:/app/seed:ro
+      - ./data/seeder7:/app/data/seeder7
+
+  seeder8:
+    <<: *seeder
+    container_name: p2pcdn-seeder-8
+    environment:
+      P2PCDN_CLIENT_LISTEN_PORT: "50008"
+      P2PCDN_DAEMON_ADDR: "0.0.0.0:9098"
+      P2PCDN_CLIENT_DATA_DIR: /app/data/seeder8
+      P2PCDN_LOGGING_FILE: /app/data/seeder8/daemon.log
+    volumes:
+      - ./p2pcdn-daemon:/app/p2pcdn-daemon:ro
+      - ./seed:/app/seed:ro
+      - ./data/seeder8:/app/data/seeder8

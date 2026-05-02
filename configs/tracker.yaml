@@ -1,0 +1,26 @@
+tracker:
+  port: 8080
+  relay_servers:
+    # Protocol Labs public relay nodes
+    - /ip4/147.75.83.83/tcp/4001/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb
+    - /ip4/147.75.77.187/tcp/4001/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa
+    - /dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN
+    - /dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa
+  rate_limit:
+    requests_per_minute: 60
+
+database:
+  host: localhost
+  port: 3306
+  user: p2pcdn
+  password: p2pcdn123
+  database: p2pcdn
+  sslmode: disable
+
+redis:
+  url: localhost:6379
+  password: ""
+  db: 0
+
+logging:
+  level: info

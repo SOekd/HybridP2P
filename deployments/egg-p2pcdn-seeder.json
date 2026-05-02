@@ -1,0 +1,82 @@
+{
+    "_comment": "P2P CDN Seeder - Pterodactyl Egg Configuration",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-03-08T00:00:00+00:00",
+    "name": "P2P CDN Seeder",
+    "author": "your@email.com",
+    "description": "P2P CDN Daemon/Seeder node. Connects to a tracker and seeds files to peers via libp2p/BitSwap.",
+    "features": [],
+    "docker_images": {
+        "ghcr.io/parkervcp/yolks:debian": "ghcr.io/parkervcp/yolks:debian"
+    },
+    "file_denylist": [],
+    "startup": "chmod +x ./p2pcdn-daemon && P2PCDN_DAEMON_ADDR=0.0.0.0:{{DAEMON_PORT}} P2PCDN_TRACKER_URL={{TRACKER_URL}} P2PCDN_CLIENT_LISTEN_PORT={{P2P_PORT}} P2PCDN_LOGGING_LEVEL={{LOG_LEVEL}} P2PCDN_CLIENT_DATA_DIR=/home/container/.p2pcdn/data P2PCDN_LOGGING_FILE=/home/container/.p2pcdn/daemon.log P2PCDN_P2P_EXTERNAL_IP={{EXTERNAL_IP}} ./p2pcdn-daemon",
+    "config": {
+        "files": "{}",
+        "startup": "{\n    \"done\": \"starting daemon server\"\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\n\nset -e\n\nmkdir -p /mnt/server\ncd /mnt/server\n\necho \"=====================================\"\necho \"P2P CDN Seeder Installation\"\necho \"=====================================\"\necho \"\"\n\n# Create data directory\nmkdir -p .p2pcdn/data\n\n# Give the container user full write access to the entire server directory\nchmod -R 777 /mnt/server\n\necho \"Installation complete.\"\necho \"\"\necho \"Next steps:\"\necho \"1. Upload your 'p2pcdn-daemon' binary (Linux/amd64) to /home/container/\"\necho \"2. Set the egg variables (TRACKER_URL, P2P_PORT, etc.)\"\necho \"3. Start the server (chmod +x is applied automatically on startup)\"",
+            "container": "debian:bookworm-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Tracker URL",
+            "description": "Full URL of the P2P CDN tracker. Example: http://190.115.198.31:50000",
+            "env_variable": "TRACKER_URL",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "P2P Listen Port",
+            "description": "Port used for libp2p P2P connections (TCP and UDP). Must be open in the firewall.",
+            "env_variable": "P2P_PORT",
+            "default_value": "4001",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|numeric|between:1024,65535",
+            "field_type": "text"
+        },
+        {
+            "name": "Daemon API Port",
+            "description": "Internal HTTP port for the daemon API (used by p2pcdn CLI to communicate with the daemon).",
+            "env_variable": "DAEMON_PORT",
+            "default_value": "9090",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|numeric|between:1024,65535",
+            "field_type": "text"
+        },
+        {
+            "name": "External IP",
+            "description": "Public IP address of this server (e.g. 190.115.198.31). Required for P2P connections from outside the container network.",
+            "env_variable": "EXTERNAL_IP",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "nullable|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Log Level",
+            "description": "Logging verbosity level.",
+            "env_variable": "LOG_LEVEL",
+            "default_value": "info",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:debug,info,warn,error",
+            "field_type": "text"
+        }
+    ]
+}

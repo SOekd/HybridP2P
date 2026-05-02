@@ -1,0 +1,33 @@
+{
+    "_comment": "P2P CDN Tracker - Pterodactyl Egg Configuration",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-01-16T20:00:00+00:00",
+    "name": "P2P CDN Tracker",
+    "author": "your@email.com",
+    "description": "Distributed tracker server for P2P Content Delivery Network with MariaDB and Redis support",
+    "features": [
+        "eula"
+    ],
+    "docker_images": {
+        "ghcr.io/parkervcp/yolks:debian": "ghcr.io/parkervcp/yolks:debian"
+    },
+    "file_denylist": [],
+    "startup": "./tracker --config tracker.yaml",
+    "config": {
+        "files": "{}",
+        "startup": "{\n    \"done\": \"starting P2P CDN tracker\"\n}",
+        "logs": "{}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin/bash\n\nif [ ! -d /mnt/server/ ]; then\n    mkdir -p /mnt/server/\nfi\n\ncd /mnt/server\n\necho \"=====================================\"\necho \"P2P CDN Tracker Installation\"\necho \"=====================================\"\necho \"\"\necho \"Installation Complete!\"\necho \"\"\necho \"Next steps:\"\necho \"1. Upload your 'tracker' binary (Linux/amd64) to /home/container/\"\necho \"2. Upload your 'tracker.yaml' configuration file\"\necho \"3. Make the binary executable: chmod +x tracker\"\necho \"4. Start the server\"",
+            "container": "debian:bookworm-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": []
+}
